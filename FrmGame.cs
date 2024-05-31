@@ -1,939 +1,700 @@
-﻿using System;
+﻿using MyFirstLibraryInForm;
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
-
-namespace ColorMatching_Game
+using MyFirstLibraryInForm;
+namespace FlipTheNumbers
 {
-   
     public partial class FrmGame : Form
     {
-        public static FrmGame Instance;
+        public static FrmGame instance;
+
         public FrmGame()
         {
-            Instance = this;
+           
             InitializeComponent();
+            instance = this;
         }
-        
-       FrmResultGame resultGame = new FrmResultGame();
 
-        //Fill Info From FrmRequarmensGame...
-        public stReq Req;
-        public struct stReq
+
+
+        public stGame Game;
+        public struct stGame
         {
-            public Color Color1, Color2, Color3, Color4;
-            public string StringYourColors;
-            public byte Timer;
-            public string LevelGame;
-            public byte TimerGame;
+            public Button[] Buttons,ButtonsTries;
+            public byte CounterTimerPlay, CounterOfWin,CounterOfLose, CounterRepetNumber, CounterRound,CounterTag,CounterTriesGame, NumberOfRound;
+            public bool IsPass;
+
         };
-        void FillStructReq()
-        {
-            Req.Color1 = FrmRequarmensGame.Instance.btnFirstColor.BackColor;
-            Req.Color2 = FrmRequarmensGame.Instance.btnSecondColor.BackColor;
-            Req.Color3 = FrmRequarmensGame.Instance.btnThirdColor.BackColor;
-            Req.Color4 = FrmRequarmensGame.Instance.btnForthColor.BackColor;
-            Req.StringYourColors = FrmRequarmensGame.Instance.Req.StringYourColors;
-            Req.Timer = FrmRequarmensGame.Instance.Req.Timer;
-            Req.LevelGame = FrmRequarmensGame.Instance.Req.LevelGame;
-            //---------------------------------------------------------------------
 
-            //Fill GameInfo
-            lblColorGame.Text = Req.StringYourColors;
-            lblTimer.Text = Req.Timer.ToString();
-            lblLevel.Text = Req.LevelGame;
+        void FillGameInfo()
+        {
+            lblColorName.Text = FrmRequarmensGame.Instance.InfoGame.ColorName;
+            lblNumberOfRound.Text = FrmRequarmensGame.Instance.InfoGame.NumberOfRound.ToString();
+            Game.NumberOfRound = FrmRequarmensGame.Instance.InfoGame.NumberOfRound;
         }
+
         
-
-        stGameInfo gameInfo;
-        struct stGameInfo
+        void FillTheButtonNumbersInArr()
         {
-            public byte NumberOfRightGuess, NumberOfWrongGuess;
-        };
+            Game.Buttons[0] = button1;
+            Game.Buttons[1] = button2;
+            Game.Buttons[2] = button3;
+            Game.Buttons[3] = button4;
+            Game.Buttons[4] = button5;
+            Game.Buttons[5] = button6;
+          Game.Buttons[6] = button7;
+          Game.Buttons[7] = button8;
+          Game.Buttons[8] = button9;
+          Game.Buttons[9] = button10;
+          Game.Buttons[10] = button11;
+          Game.Buttons[11] = button12;
+          Game.Buttons[12] = button13;
+          Game.Buttons[13] = button14;
+          Game.Buttons[14] = button15;
+          Game.Buttons[15] = button16;
+          Game.Buttons[16] = button17;
+          Game.Buttons[17] = button18;
+          Game.Buttons[18] = button19;
+          Game.Buttons[19] = button20;
+          Game.Buttons[20] = button21;
+          Game.Buttons[21] = button22;
+          Game.Buttons[22] = button23;
+          Game.Buttons[23] = button24;
+          Game.Buttons[24] = button25;
+          Game.Buttons[25] = button26;
+          Game.Buttons[26] = button27;
+          Game.Buttons[27] = button28;
+          Game.Buttons[28] = button29;
+          Game.Buttons[29] = button30;
+          Game.Buttons[30] = button31;
+          Game.Buttons[31] = button32;
+          Game.Buttons[32] = button33;
+          Game.Buttons[33] = button34;
+          Game.Buttons[34] = button35;
+          Game.Buttons[35] = button36;
+          Game.Buttons[36] = button37;
+          Game.Buttons[37] = button38;
+          Game.Buttons[38] = button39;
+          Game.Buttons[39] = button40;
+          Game.Buttons[40] = button41;
+          Game.Buttons[41] = button42;
+          Game.Buttons[42] = button43;
+          Game.Buttons[43] = button44;
+          Game.Buttons[44] = button45;
+          Game.Buttons[45] = button46;
+          Game.Buttons[46] = button47;
+          Game.Buttons[47] = button48;
+          Game.Buttons[48] = button49;
+          Game.Buttons[49] = button50;
+          Game.Buttons[50] = button51;
+          Game.Buttons[51] = button52;
+          Game.Buttons[52] = button53;
+          Game.Buttons[53] = button54;
+          Game.Buttons[54] = button55;
+          Game.Buttons[55] = button56;
+          Game.Buttons[56] = button57;
+          Game.Buttons[57] = button58;
+          Game.Buttons[58] = button59;
+          Game.Buttons[59] = button60;
+          Game.Buttons[60] = button61;
+          Game.Buttons[61] = button62;
+          Game.Buttons[62] = button63;
+          Game.Buttons[63] = button64;
+          Game.Buttons[64] = button65;
+          Game.Buttons[65] = button66;
+          Game.Buttons[66] = button67;
+          Game.Buttons[67] = button68;
+          Game.Buttons[68] = button69;
+          Game.Buttons[69] = button70;
+          Game.Buttons[70] = button71;
+          Game.Buttons[71] = button72;
+          Game.Buttons[72] = button73;
+          Game.Buttons[73] = button74;
+          Game.Buttons[74] = button75;
+          Game.Buttons[75] = button76;
+          Game.Buttons[76] = button77;
+          Game.Buttons[77] = button78;
 
-        stCounterColors CounterColors;
-        struct stCounterColors
+        }
+        void FillTheButtonTriesInArr()
         {
-            public byte CounterRed, CounterYellow, CounterGreen, CounterBlue;
-            public byte CounterDarkRed, CounterLightYellow, CounterDarkGreen, CounterLightBlue;
-        };
-
-        public  stCounter Counter;
-        public struct stCounter
-        {
-            public byte CounterShowColor, CounterRightGuess, CounterWrongAnswer;
-            public static byte NumberOfGame;
-
-        };
-
-          stGame Game;
-         struct stGame
-        {
-            //Choice button Player
-            public Button btn1, btn2;
-            //button In system
-            public Button button1, button2;
-            public bool Turn2;
-            public bool Pass;
+            Game.ButtonsTries[0] = btnTry1;
+            Game.ButtonsTries[1] = btnTry2;
+            Game.ButtonsTries[2] = btnTry3;
+            Game.ButtonsTries[3] = btnTry4;
+            Game.ButtonsTries[4] = btnTry5;
+            Game.ButtonsTries[5] = btnTry6;
+            Game.ButtonsTries[6] = btnTry7;
+            Game.ButtonsTries[7] = btnTry8;
+            Game.ButtonsTries[8] = btnTry9;
+            Game.ButtonsTries[9] = btnTry10;
+        }
       
-            
-        };
-        public stResultGame ResultG;
-        public struct stResultGame
+        void FillAllButtonNAndC()
         {
-            public string NumberOfGame;
-            public string LevelGame;
-            public string NumberOfTime;
-            public string FinishGameTimer;
-            public string Colors;
-            public bool Pass;
-        };
-        
-
-        byte GetMaxCounter()
-        {
-            if (Req.LevelGame == "Hard")
-                return 4;
-            else
-                return 2;
-
-        }
-
-        bool CheckCounter(byte CounterColor, byte CounterColor2)
-        {
-            byte Max = GetMaxCounter();
-
-            return CounterColor == Max || CounterColor2 == Max;
-        }
-        bool CheckCounter(byte CounterColor)
-        {
-            byte Max = GetMaxCounter();
-            return CounterColor == Max;
-
-        }
-
-
-
-        bool FillColorEazy(Button btn, int Number)
-        {
-
-            //bool Choice1 = default, Choice2 = default;
-            //Choice1 = CheckCounter(CounterColors.CounterRed, CounterColors.CounterDarkRed);
-            //Choice2 = CheckCounter(CounterColors.CounterYellow, CounterColors.CounterLightYellow);
-
-            //if (Choice1)
-            //    Number = 2;
-            //else if(Choice2)
-            //    Number = 1;
-            //else
-            //    Number = random.Next(1, 4);
-
-            switch (Number)
+            Random rnd = new Random();
+            int RandomeNumber = 0;
+            for (short i = 0; i < 78; i++)
             {
-                case 1:
-                    {
-                        if (FrmRequarmensGame.Instance.rbRed.Checked)
-                        {
-                            if (CheckCounter(CounterColors.CounterRed))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterRed++;
-                            btn.BackColor = Color.Red;
-
-                        }
-                        else
-                        {
-                            if (CheckCounter(CounterColors.CounterDarkRed))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterDarkRed++;
-                            btn.BackColor = Color.DarkRed;
-                        }
-                        return true;
-                    }
-                case 2:
-                    {
-                        if (FrmRequarmensGame.Instance.rbYellow.Checked)
-                        {
-                            if (CheckCounter(CounterColors.CounterYellow))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterYellow++;
-                            btn.BackColor = Color.Yellow;
-                        }
-                        else
-                        {
-                            if (CheckCounter(CounterColors.CounterLightYellow))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterLightYellow++;
-                            btn.BackColor = Color.LightYellow;
-                        }
-                        return true;
-                    }
+                RandomeNumber = rnd.Next(1, 100);
+                Game.Buttons[i].Text = RandomeNumber.ToString();
+                Game.Buttons[i].ForeColor = FrmRequarmensGame.Instance.InfoGame.Color;
+                Game.Buttons[i].BackColor = Color.White ;
+                Game.Buttons[i].FlatAppearance.BorderColor = Color.Black;
             }
-            return false;
         }
-        bool FillColorMediumAndHard(Button btn, int Number)
+
+        bool CheckNumber(int Number)
         {
-
-            //if(CheckCounter(CounterColors.CounterRed, CounterColors.CounterDarkRed))
-            //{
-            //    //Delete  Red choice 
-            //    Number = random.Next(2, 4);
-            //}
-            //if (CheckCounter(CounterColors.CounterYellow, CounterColors.CounterLightYellow) && CheckCounter(CounterColors.CounterRed, CounterColors.CounterDarkRed))
-            //{
-            //    //Delete Yellow & Red choice 
-            //    Number = random.Next(3, 4);
-            //}
-
-            //if (CheckCounter(CounterColors.CounterBlue, CounterColors.CounterLightBlue))
-            //{
-            //    //Delete Blue choice 
-            //    Number = random.Next(1, 3);
-            //}
-            //if (CheckCounter(CounterColors.CounterBlue, CounterColors.CounterLightBlue) && CheckCounter(CounterColors.CounterGreen, CounterColors.CounterDarkGreen))
-            //{
-            //    //Delete Green & Blue choice 
-            //    Number = random.Next(1, 2);
-            //}
-            //if (Number == 3)//Exceptional case
-            //{
-            //    if (CheckCounter(CounterColors.CounterYellow, CounterColors.CounterLightYellow) && CheckCounter(CounterColors.CounterRed, CounterColors.CounterDarkRed))
-            //    {
-            //        if (CheckCounter(CounterColors.CounterGreen, CounterColors.CounterDarkGreen))
-            //        {
-            //            Number = 4;
-            //        }
-            //        else
-            //        {
-            //            Number = random.Next(3, 4);
-            //        }
-            //    }
-            //}
-
-
-            switch (Number)
+            for (byte i = 0; i < 78; i++)
             {
-                case 1:
-                    {
-                        if (FrmRequarmensGame.Instance.rbRed.Checked)
-                        {
-                            if (CheckCounter(CounterColors.CounterRed))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterRed++;
-                            btn.BackColor = Color.Red;
 
-                        }
-                        else
-                        {
-                            if (CheckCounter(CounterColors.CounterDarkRed))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterDarkRed++;
-                            btn.BackColor = Color.DarkRed;
-                        }
-                        return true;
-                    }
-                case 2:
-                    {
-                        if (FrmRequarmensGame.Instance.rbYellow.Checked)
-                        {
-                            if (CheckCounter(CounterColors.CounterYellow))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterYellow++;
-                            btn.BackColor = Color.Yellow;
-                        }
-                        else
-                        {
-                            if (CheckCounter(CounterColors.CounterLightYellow))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterLightYellow++;
-                            btn.BackColor = Color.LightYellow;
-                        }
-                        return true;
-                    }
-                case 3:
-                    {
-                        if (FrmRequarmensGame.Instance.rbGreen.Checked)
-                        {
-                            if (CheckCounter(CounterColors.CounterGreen))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterGreen++;
-                            btn.BackColor = Color.Green;
-                        }
-                        else
-                        {
-                            if (CheckCounter(CounterColors.CounterDarkGreen))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterDarkGreen++;
-                            btn.BackColor = Color.DarkGreen;
-                        }
-                        return true;
-                    }
-                case 4:
-                    {
-                        if (FrmRequarmensGame.Instance.rbBlue.Checked)
-                        {
-                            if (CheckCounter(CounterColors.CounterBlue))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterBlue++;
-                            btn.BackColor = Color.Blue;
-                        }
-                        else
-                        {
-                            if (CheckCounter(CounterColors.CounterLightBlue))
-                            {
-                                return false;
-                            }
-                            CounterColors.CounterLightBlue++;
-                            btn.BackColor = Color.LightBlue;
-                        }
-                        return true;
-                    }
-            }
-            return false;
-        }
-       
-        void FillColorButton(Button btn)
-        {
-            bool Pass = false;
-            Random random = new Random();
-            int Number = default(int);
-           while (!Pass)
-            {
-                if (Req.LevelGame == "Easy")
+                if (Number.ToString() == Game.Buttons[i].Text)
                 {
-                    Number = random.Next(1, 4);
-                    Pass = FillColorEazy(btn, Number);
+                    return true;                }
+            }
+            return false;
+        }
+
+        void FillbuttonNumberQuestion()
+        {
+            Random rnd = new Random();
+            int Number = rnd.Next(1, 100) + 2;
+
+            for (byte i = 0; i < 78; i++)
+            {
+                if (CheckNumber(Number)) 
+               {
+                    btnNumberQuestion.Text = Number.ToString();
+
+                    break;
+                }
+                
+                Number = rnd.Next(1, 100) ;
+            }
+        }
+
+        byte CounterRepetNumberQuestion()
+        {
+            byte Counter = default(byte);
+
+            for (byte i = 0; i < 78; i++)
+            {
+                if (btnNumberQuestion.Text == Game.Buttons[i].Text)
+                {
+                    Counter++;
+                }
+            }
+            return Counter;
+        }
+
+        stChoices Choices;
+        struct stChoices
+        {
+            public byte Choice1,Choice2,Choice3;
+            public bool UseChoice1,UseChoice2,UseChoice3;
+        }
+
+        void ResetNumberChoices()
+        {
+            Choices.Choice1 = 0;
+            Choices.Choice2 = 0;
+            Choices.Choice3 = 0;
+        }
+
+        void ResetBoolChoices()
+        {
+            Choices.UseChoice1 = false;
+            Choices.UseChoice2 = false;
+            Choices.UseChoice3 = false;
+        }
+
+        byte RandomeChoiceNumberQuestion(int RandomeNumber)
+        { 
+            ResetNumberChoices();
+
+            Choices.Choice1 = Game.CounterRepetNumber;
+
+            Choices.Choice2 =  Game.CounterRepetNumber;
+            Choices.Choice2 += 2;
+
+            Choices.Choice3 = Game.CounterRepetNumber;
+            if(Game.CounterRepetNumber <= 2)
+            {
+                Choices.Choice3 += 4;
+            }
+            else
+            {
+                Choices.Choice3 -= 2;
+            }
+
+            byte[] ChoiceNumber = { Choices.Choice1, Choices.Choice2, Choices.Choice3 };
+            return ChoiceNumber[RandomeNumber - 1];
+        }
+
+        bool IsMatching(Button btn ,int randomeNumber)
+        {
+            switch (randomeNumber)
+            {
+                case 1:
+
+                    if(Choices.UseChoice1)
+                    {
+                        return true;
+                    }
+                    Choices.UseChoice1 = true;
+
+                    return btn.Text == Choices.Choice2.ToString() || btn.Text == Choices.Choice3.ToString();
+                    case 2:
+
+                    if (Choices.UseChoice2)
+                    {
+                        return true;
+                    }
+                    Choices.UseChoice2 = true;
+
+                    return btn.Text == Choices.Choice1.ToString() || btn.Text == Choices.Choice3.ToString();
+                default:
+
+                    if (Choices.UseChoice3)
+                    {
+                        return true;
+                    }
+                    Choices.UseChoice3 = true;
+
+                    return btn.Text == Choices.Choice2.ToString() || btn.Text == Choices.Choice3.ToString();
+            }
+
+        }
+
+        bool SpecialMode(Button btn)
+        {
+            if(  Choices.UseChoice1 && Choices.UseChoice2)
+            {
+                btn.Text = Choices.Choice3.ToString();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        bool BaseCheckButtonChoice(Button button, int RandomeNumber)
+        {
+            button.Text = RandomeChoiceNumberQuestion(RandomeNumber).ToString();
+
+            if(SpecialMode(button))
+            {
+                return true;
+            }
+
+            if (IsMatching(button, RandomeNumber))
+            {
+                return false;
+            }
+
+            return true;
+        }
+                               //1,3
+       void CheckButtonChoice(Button button)
+        {
+            Random random = new Random();
+            int RandomeNumber = random.Next(1, 3);
+
+            while (!BaseCheckButtonChoice(button, RandomeNumber))
+            {
+                RandomeNumber = random.Next(1, 3);
+            }
+            return;
+        }
+
+        void FillCounterRepetNumberQuestion()
+        {
+            Game.CounterRepetNumber = CounterRepetNumberQuestion();
+        }
+
+        void FillThreeChoices()
+        {
+            ResetBoolChoices();
+            CheckButtonChoice(btnChoiceOne);
+            CheckButtonChoice(btnChoiceTwo);
+            CheckButtonChoice(btnChoicethree);
+        }
+
+        bool IsPass(Button btn)
+        {
+            return btn.Text == Game.CounterRepetNumber.ToString();
+        }
+
+        void FillCounterWinnerAndLoser(bool Pass)
+        {
+            if(Pass)
+            {
+                picModeGame.Image = Image.FromFile(@"C:\Photos\ModeWin.png");
+                Game.CounterOfWin++;
+               
+            }
+            else
+            {
+                picModeGame.Image = Image.FromFile(@"C:\Photos\ModeLose.png");
+                Game.CounterOfLose++;
+                Game.CounterTriesGame--;
+            }
+        }
+
+        void FillColorToButtonNumbers()
+        {
+            for (byte i = 0; i < 78; i++)
+            {
+                if(Game.IsPass)
+                {
+                    if (Game.Buttons[i].Text == btnNumberQuestion.Text ) 
+                    {
+                        Game.Buttons[i].BackColor = Color.Green;
+                    }
                 }
                 else
                 {
-                    Number = random.Next(1, 6);
-                    Pass = FillColorMediumAndHard(btn, Number);
+                    if (Game.Buttons[i].Text == btnNumberQuestion.Text)
+                    {
+                        Game.Buttons[i].BackColor = Color.Green;
+                    }
+                    else
+                    {
+                        Game.Buttons[i].BackColor = Color.Red;
+                    }
                 }
             }
-           
         }
 
-        void FillColorButton()      
-        {
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                    FillColorButton(btn1);
-                    FillColorButton(btn5);
-                    FillColorButton(btn2);
-                    FillColorButton(btn4);
-                    return;
-
-                case "Medium":
-                    FillColorButton(btn1);
-                    FillColorButton(btn3);
-                    FillColorButton(btn5);
-                    FillColorButton(btn7);
-                    FillColorButton(btn2);
-                    FillColorButton(btn4);
-                    FillColorButton(btn6);
-                    FillColorButton(btn8);
-                    return;
-
-                case "Hard":
-                    FillColorButton(btn1);
-                    FillColorButton(btn3);
-                    FillColorButton(btn5);
-                    FillColorButton(btn7);
-                    FillColorButton(btn9);
-                    FillColorButton(btn11);
-                    FillColorButton(btn13);
-                    FillColorButton(btn15);
-                    FillColorButton(btn2);
-                    FillColorButton(btn4);
-                    FillColorButton(btn6);
-                    FillColorButton(btn8);
-                    FillColorButton(btn10);
-                    FillColorButton(btn12);
-                    FillColorButton(btn14);
-                    FillColorButton(btn16);
-                    return;
-
-            }
-
-            
-        }
-        void HideQButton()
-        {
-            btn1Q.Visible = false;
-            btn2Q.Visible = false;
-            btn3Q.Visible = false;
-            btn4Q.Visible = false;
-            btn5Q.Visible = false;
-            btn6Q.Visible = false;
-            btn7Q.Visible = false;
-            btn8Q.Visible = false;
-            btn9Q.Visible = false;
-            btn10Q.Visible = false;
-            btn11Q.Visible = false;
-            btn12Q.Visible = false;
-            btn13Q.Visible = false;
-            btn14Q.Visible = false;
-            btn15Q.Visible = false;
-            btn16Q.Visible = false;
-        }
-        void ShowQButton()
-        {
-            btn1Q.Visible = true;
-            btn2Q.Visible = true;
-            btn3Q.Visible = true;
-            btn4Q.Visible = true;
-            btn5Q.Visible = true;
-            btn6Q.Visible = true;
-            btn7Q.Visible = true;
-            btn8Q.Visible = true;
-            btn9Q.Visible = true;
-            btn10Q .Visible = true;
-            btn11Q .Visible = true;
-            btn12Q .Visible = true;
-            btn13Q .Visible = true;
-            btn14Q .Visible = true;
-            btn15Q .Visible = true;
-            btn16Q .Visible = true;
-        }
-
-        //button اللي عليها الوان
-        Button ReturnChoiceButton(Button Button)
-        {
-            int number = Convert.ToByte(Button.Tag);
-            switch (number)
-            {
-                case 1:{ return btn1; }
-                case 2:{ return btn2; }
-                case 3:{ return btn3; }
-                case 4:{ return btn4; }
-                case 5:{ return btn5; }
-                case 6:{ return btn6; }
-                case 7:{ return btn7; }
-                case 8:{ return btn8; }
-                case 9:{ return btn9; }
-                case 10:{ return btn10; }
-                case 11:{ return btn11; }
-                case 12:{ return btn12; }
-                case 13:{ return btn13; }
-                case 14:{ return btn14; }
-                case 15:{ return btn15; }
-                case 16:{ return btn16; }
-            }
-            return null;
-        }
-       
-        void FillCounterWrongAndRightGuess(Button Button1, Button Button2)
-        {
-             if(Button1.BackColor.Name == Button2.BackColor.Name)
-            {
-                    Counter.CounterRightGuess++;
-                
-            }
-            else
-            {
-                if (MessageBox.Show("try again", "Wrong Guess", MessageBoxButtons.OK) == DialogResult.OK)
-                {
-                    Counter.CounterWrongAnswer++;
-                    Game.button1.Visible = true;
-                    Game.button2.Visible = true;
-                }
-            }
-
-
-        }
-
-        //Button اللي عليها علامة استفهام
-        Button ReturnSystemButton(Button Button)
-        {
-            int number = Convert.ToByte(Button.Tag);
-            switch (number)
-            {
-                case 1: { return btn1Q; }
-                case 2: { return btn2Q; }
-                case 3: { return btn3Q; }
-                case 4: { return btn4Q; }
-                case 5: { return btn5Q; }
-                case 6: { return btn6Q; }
-                case 7: { return btn7Q; }
-                case 8: { return btn8Q; }
-                case 9: { return btn9Q; }
-                case 10: { return btn10Q; }
-                case 11: { return btn11Q; }
-                case 12: { return btn12Q; }
-                case 13: { return btn13Q; }
-                case 14: { return btn14Q; }
-                case 15: { return btn15Q; }
-                case 16: { return btn16Q; }
-
-            }
-            return null;
-        }
-
-        // public static List<ListViewItem> DataGame = new List<ListViewItem>();
-        //public static Queue<ListViewItem> QData = new Queue<ListViewItem>();
-        //void FillDataGame(bool Pass)
+        //void ResetColorButton()
         //{
-        //    ListViewItem item = new ListViewItem(stCounter.NumberOfGame.ToString());
-
-        //    item.SubItems.Add(Req.LevelGame.ToString());
-        //    item.SubItems.Add(Req.Timer.ToString() + " Second");
-        //    item.SubItems.Add(Req.TimerGame.ToString() + " Second");
-        //    if(Pass)
+        //    for (byte i = 0; i < 84; i++)
         //    {
-        //        item.SubItems.Add("Yes :-)");
+        //        Game.Buttons[i].ForeColor= Color.Black;
+        //        Game.Buttons[i].FlatAppearance.BorderColor = Color.Red;
         //    }
-        //    else
-        //    {
-        //        item.SubItems.Add("No :-(");
-        //    }
-        //    item.SubItems.Add(Req.StringYourColors);
-
-        //   // DataGame.Add(item);
-        //  QData.Enqueue(item);
         //}
-        
-    
-        void GoToResultGame()
-        {
-            resultGame.Show();
-            this.Close();
-        }
 
-        void WhenPlayerWin()
+        void EnableForThreeButtons(bool Enable)
         {
-            gbGame.BackColor = Color.DarkSeaGreen;
-
-            if (MessageBox.Show("Congratulations on your win", "Game over", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if(!Enable)
             {
-               GoToResultGame();
+                btnChoiceOne.Enabled = false;
+                btnChoiceTwo.Enabled = false;
+                btnChoicethree.Enabled = false;
             }
-           else
+
+            else
             {
-                btnResultGame.ForeColor = Color.Green;
-                btnResultGame.Visible = true;
+                btnChoiceOne.Enabled = true;
+                btnChoiceTwo.Enabled = true;
+                btnChoicethree.Enabled = true;
             }
+
         }
-        public void PlayAgain()
+
+        void SetRoundGame(byte NumberOfRound)
         {
-            FrmRequarmensGame.Instance.ResetRequarmensGame();
-            Application.OpenForms["FrmRequarmensGame"].Show();
-
-            CounterColors.CounterRed = 0;
-            CounterColors.CounterDarkRed = 0;
-            CounterColors.CounterGreen = 0;
-            CounterColors.CounterDarkGreen = 0;
-            CounterColors.CounterYellow = 0;
-            CounterColors.CounterLightYellow = 0;
-            CounterColors.CounterBlue = 0;
-            CounterColors.CounterLightBlue = 0;
-
-            Game.btn1 = null;
-            Game.btn2 = null;
-            Game.button1 = null;
-            Game.button2 = null;
-
-            Counter.CounterRightGuess = 0;
-            Counter.CounterWrongAnswer = 0;
-
-           this.Close();
+            lblRouundGame.Text = NumberOfRound.ToString() + "/" + /*Game.NumberOfRound */FrmRequarmensGame.Instance.InfoGame.NumberOfRound.ToString() + "Round(s)";
         }
-        
-        void WhenPlayerLose()
+
+      
+
+        //Button in button Number [Game]
+        void WhenPressbuttonNumbers(object sender, EventArgs e)
         {
-           
-            gbGame.BackColor = Color.Maroon;
-            if (MessageBox.Show("HardLuck,\nif you want to see reslut game Press [Yes] ", "Game over", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            Button btn = (Button)sender;
+            //string Tag = btn.Tag.ToString();
+            if (btn.Tag == null)
             {
-                GoToResultGame();
+                Game.CounterTag++;
+                btn.Tag = Game.CounterTag;
+                btn.FlatAppearance.BorderColor = Color.Red;
+
             }
             else
             {
-                btnResultGame.ForeColor = Color.Red;
-                btnResultGame.Visible = true;
+                Game.CounterTag--;
+                btn.Tag = null;
+                btn.FlatAppearance.BorderColor = Color.Black;
             }
         }
 
-  
-        
-      
-        
-        //bool FinishBeforeTimeEazy()
-        //{
-        //    return 
-        //}
-      
-        void ResultGame()
+        void ResetForm()
         {
+            Game.CounterTag = 0;
+            Game.CounterTimerPlay = 0;
+            Game.CounterOfWin = 0;
+            Game.CounterOfLose = 0;
+            Game.CounterRepetNumber = 0;
 
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                    if (IsVisible(btn1Q) || IsVisible(btn2Q) || IsVisible(btn4Q) ||
-              IsVisible(btn5Q))
-                    {
-                        Game.Pass = false;
-                        WhenPlayerLose();
-                        return;
-                    }
-                    break;
-
-                case "Medium":
-                    if (IsVisible(btn1Q) || IsVisible(btn2Q) || IsVisible(btn3Q) ||
-             IsVisible(btn4Q) || IsVisible(btn5Q) || IsVisible(btn6Q) ||
-             IsVisible(btn7Q) || IsVisible(btn8Q))
-                    {
-                        Game.Pass = false;
-                        WhenPlayerLose();
-                        return;
-                    }
-                    break;
-
-                case "Hard":
-                    if (IsVisible(btn1Q) || IsVisible(btn2Q) || IsVisible(btn3Q) ||
-               IsVisible(btn4Q) || IsVisible(btn5Q) || IsVisible(btn6Q) ||
-               IsVisible(btn7Q) || IsVisible(btn8Q) || IsVisible(btn9Q) ||
-               IsVisible(btn10Q) || IsVisible(btn11Q) || IsVisible(btn12Q) ||
-               IsVisible(btn13Q) ||IsVisible(btn14Q) || IsVisible(btn15Q) ||
-               IsVisible(btn16Q))
-                    {
-                        Game.Pass = false;
-                        WhenPlayerLose();
-                        return;
-                    }
-                    break;
-
-
-            }
-              
-                if (Counter.CounterRightGuess >= Counter.CounterWrongAnswer)
-            {
-                Game.Pass = true;
-                WhenPlayerWin();
-            }
-            else
-            {
-                Game.Pass = false;
-                WhenPlayerLose();
-            }
+            btnPlay.Visible = true;
+            btnNextRound.Visible = false;
         }
-       void SetRecordGame()
+
+        void VisibleButtonAndNot(byte index, bool Visible)
         {
-            lblNumberOfRightGuess.Text = Counter.CounterRightGuess.ToString();
-            lblNumberOfWrongGuess.Text = Counter.CounterWrongAnswer.ToString();
+            if (!Visible)
+                --index;
+            Game.ButtonsTries[index].Visible = Visible;
         }
-        bool IsVisible(Button button)
+        void SetVisibleinPanelTries()
         {
-            return button.Visible;
-        }
-        void FinishGameBeforeTimeEazy()
-        {
-            if (!IsVisible(btn1Q) && !IsVisible(btn2Q) && !IsVisible(btn4Q) &&
-               !IsVisible(btn5Q))
+            byte TriesGame = Game.CounterTriesGame;
+            while(TriesGame < Game.NumberOfRound)
             {
-                TimerPb.Enabled = false;
-                ResultGame();
+                TriesGame++;
+                VisibleButtonAndNot(TriesGame , false);
             }
 
-        }
-        void FinishGameBeforeTimeMedium()
-        {
-            if(!IsVisible(btn1Q) &&  !IsVisible(btn2Q) && !IsVisible(btn3Q) &&
-               !IsVisible(btn4Q) && !IsVisible(btn5Q) && !IsVisible(btn6Q)   &&
-               !IsVisible(btn7Q) && !IsVisible(btn8Q))
+            for (byte i = 0; i < Game.CounterTriesGame; i++)
             {
-                TimerPb.Enabled = false;
-                ResultGame();
-            }
-
-        }
-        void FinishGameBeforeTimeHard()
-        {
-            if (!IsVisible(btn1Q) && !IsVisible(btn2Q) && !IsVisible(btn3Q) &&
-               !IsVisible(btn4Q) && !IsVisible(btn5Q) && !IsVisible(btn6Q) &&
-               !IsVisible(btn7Q) && !IsVisible(btn8Q) && !IsVisible(btn9Q) &&
-               !IsVisible(btn10Q) && !IsVisible(btn11Q) && !IsVisible(btn12Q) &&
-               !IsVisible(btn13Q) && !IsVisible(btn14Q) && !IsVisible(btn15Q) &&
-               !IsVisible(btn16Q))
-            {
-                TimerPb.Enabled = false;
-                ResultGame();
-            }
-
-        }
-        void FinishGameBeforeTime()
-        {
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                    FinishGameBeforeTimeEazy();
-                    return;
-                case "Medium":
-                    FinishGameBeforeTimeMedium();
-                    return;
-                case "Hard":
-                    FinishGameBeforeTimeHard();
-                    return;
-            }
-
-        }
-        void WhenPressButtonQuestionMark(Button button)
-        {
-            button.Visible = false;
-            if(Game.Turn2)
-            {
-              
-                Game.btn2 = ReturnChoiceButton(button);
-                Game.button2 = ReturnSystemButton(button);
-                FillCounterWrongAndRightGuess(Game.btn1, Game.btn2);
-                SetRecordGame();
-                FinishGameBeforeTime();
-                Game.Turn2 = false;
-            }
-            else
-            {
-                Game.btn1 = ReturnChoiceButton(button);
-                Game.button1 = ReturnSystemButton(button);
-                Game.Turn2 = true;
+                VisibleButtonAndNot(i, true);
             }
 
         }
 
-        private void btnQMark_Click(object sender, EventArgs e)
+        Form frmResultGame = new FrmResultGame();
+
+        void ShowResultGame()
         {
-             WhenPressButtonQuestionMark((Button)sender);
-        }
-
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        
-        
-
-        public Size GetSize(int Width, int Height)
-        {
-            System.Drawing.Size size;
-            size = new System.Drawing.Size(Width, Height);
-            return size;
-        }
-      
-        void ChangeSizeFormByLevel()
-        {
-            System.Drawing.Size size = new Size();
-            switch (Req.LevelGame)
+            if (frmResultGame.IsDisposed)
             {
-                case "Easy":
-                    size = GetSize(770, 605);
-                    break;
-                case "Medium":
-                    size = GetSize(833, 605);
-                    break;
-                case "Hard":
-                    size = GetSize(1203, 605);
-                    break;
-            }
-          this.Size = size;
-        }
-
-        void ChangeSizeGbGameByLevel()
-        {
-            System.Drawing.Size size = new Size();
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                    size = GetSize(304, 248);
-                    break;
-                case "Medium":
-                    size = GetSize(433, 353);
-                    break;
-                case "Hard":
-                    size = GetSize(852, 353);
-                    break;
-            }
-            gbGame.Size = size;
-        }
-
-
-       public Point GetLocation(int x, int y)
-        {
-            Point location = new Point(x,y);
-            return location;
-        }
-        void ChangeLocation()
-        {
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                    btnShowColors.Location = GetLocation(309, 72);
-                    btnStartGame.Location = GetLocation(429, 58);
-                    lblNumberOfProgressBar.Location = GetLocation(429, 56);
-                    pbTimerGame.Location = GetLocation(429, 83);
-                    lblTimerShowColors.Location = GetLocation(386, 376);
-                    return;
-
-
-                case "Medium":
-                    btnShowColors.Location = GetLocation(309, 72);
-                    btnStartGame.Location = GetLocation(429, 58);
-                    lblNumberOfProgressBar.Location = GetLocation(429, 56);
-                    pbTimerGame.Location = GetLocation(429, 83);
-                    lblTimerShowColors.Location = GetLocation(449, 475);
-                    return;
-
-
-                case "Hard":
-                    btnShowColors.Location = GetLocation(535, 73);
-                    btnStartGame.Location = GetLocation(655, 58);
-                    lblNumberOfProgressBar.Location = GetLocation(655, 56);
-                    pbTimerGame.Location = GetLocation(655, 83);
-                    lblTimerShowColors.Location = GetLocation(653, 475);
-                    return;
-            }
-           
-        }
-
-        public void FillResultGame()
-        {
-            ResultG.NumberOfGame = stCounter.NumberOfGame.ToString();
-            ResultG.LevelGame = Req.LevelGame;
-            ResultG.NumberOfTime = Req.Timer.ToString();
-            ResultG.FinishGameTimer = Req.TimerGame.ToString();
-            ResultG.Colors = Req.StringYourColors;
-            ResultG.Pass = Game.Pass;
-        }
-
-        void RestartGame()
-        {
-            btnStartGame.Visible = true;
-            gbGame.Enabled = false;
-            btnShowColors.Enabled = true;
-            btnBacktoEdit.Enabled = true;
-            btnResultGame.Visible = false;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            FillStructReq();
-          RestartGame();
-            ChangeSizeFormByLevel();
-            ChangeSizeGbGameByLevel();
-            ChangeLocation();
-        }
-
-        private void btnBacktoEdit_Click(object sender, EventArgs e)
-        {
-            Application.OpenForms["FrmRequarmensGame"].Show();
-            this.Hide();
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnStartGame_Click(object sender, EventArgs e)
-        {
-            stCounter.NumberOfGame++;
-           
-            gbGame.Enabled = true;
-            btnStartGame.Visible = false;
-            pbTimerGame.Maximum = Req.Timer;
-            TimerPb.Start();
-           
-        }
-
-        private void pbTimer_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            TimerPb.Enabled = true;
-      
-            Thread.Sleep(1000);
-            pbTimerGame.Value += 1;
-            Req.TimerGame++;
-            lblNumberOfProgressBar.Text = "["+pbTimerGame.Value.ToString() + "] Second(s)";
-            pbTimerGame.Refresh();
-
-            if(pbTimerGame.Value == pbTimerGame.Maximum)
-            {
-                TimerPb.Enabled = false;
-                ResultGame();
-            }
-        }
-      
-
-        private void btnShow_Click(object sender, EventArgs e)
-        {
-            
-            if(MessageBox.Show("You have one attempt to show the colors,\nonly 3 Second STAY FOCUS", "Show Colors", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.OK)
-            {
-                btnBacktoEdit.Enabled = false;
-                TimerShowColor.Start();
-                HideQButton();
-                FillColorButton();
-                lblTimerShowColors.Visible = true;
-            }
-        }
-
-        
-        private void TimerShowColor_Tick(object sender, EventArgs e)
-        {
-            Counter.CounterShowColor++;
-            lblTimerShowColors.Text = Counter.CounterShowColor.ToString();
-            Thread.Sleep(1000);
-
-            if(Counter.CounterShowColor == 4)
-            {
-                TimerShowColor.Enabled = false;
-                ShowQButton();
-                btnStartGame.Enabled = true;
-                btnShowColors.Enabled = false;
-                lblTimerShowColors.Visible = false;
+                frmResultGame = new FrmGame();
+                frmResultGame.Show();
                 return;
             }
+            frmResultGame.Show();
         }
 
-        private void btnResultGame_Click(object sender, EventArgs e)
+
+        void WhenYouArriveLastRound()
         {
-            GoToResultGame();
+            timerForPlay.Enabled = true;
+            timerForPlay.Stop();
+            if (MessageBox.Show("Press [Yes] to show your result", "Game Over", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                ShowResultGame();
+                this.Hide();
+
+            }
+            else
+            {
+                if (MessageBox.Show("Do You Want Play Again ? ", "Game Over", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    FrmRequarmensGame.Instance.PlayAgain(true);
+                    this.Close();
+
+                }
+                else
+                {
+                    this.Close();
+                }
+
+            }
+        }
+
+        private void btnChoice_Click(object sender, EventArgs e)
+        {
+          
+            EnableForThreeButtons(false);
+            Game.IsPass = IsPass((Button)sender);
+            FillCounterWinnerAndLoser(Game.IsPass);
+            FillColorToButtonNumbers();
+            SetVisibleinPanelTries();
+            if (Game.CounterRound == Game.NumberOfRound)
+            {
+                WhenYouArriveLastRound();
+                return;
+            }
+            else
+            {
+                btnNextRound.Visible = true;
+            }
+        }
+
+        public void PlayAgain()
+        {
+            ResetForm();
+
+            btnPlay.Visible = true;
+            pChoices.Visible = false;
+            lblTitleYourTries.Visible = false;
+            pPicTries.Visible = false;
+        }
+      
+        private void FrmGame_Load(object sender, EventArgs e)
+        {
+            this.Size = new Size(606, 610);
+
+            ResetForm();
+
+            Game.CounterTriesGame = FrmRequarmensGame.Instance.InfoGame.NumberOfRound;
+
+            FillGameInfo();
+            Game.Buttons = new Button[79];
+            FillTheButtonNumbersInArr();
+
+            EnableForThreeButtons(false);
+
+            SetRoundGame(0);
+            Game.CounterRound++;
+
+            Game.ButtonsTries = new Button[10];
+            FillTheButtonTriesInArr();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            btnPlay.Visible = false;
+            PbForPlay.Visible = true;
+            lblTimer.Visible = true;
+            btnNextRound.Visible = false;
+           pPicTries.Visible = true;
+            btnShowColorEye.Visible = true;
+            lblTitleYourTries.Visible=true;
+
+            timerForPlay.Start();
+            pChoices.Visible = true;
+            lblRouundGame.Visible = true;
+            SetVisibleinPanelTries();
+           // ResetColorButton();
+            SetRoundGame(Game.CounterRound);
+            //N = Numbers & C = Color
+            FillAllButtonNAndC();
+            FillbuttonNumberQuestion();
+            EnableForThreeButtons(true);
+            FillCounterRepetNumberQuestion();
+            FillThreeChoices();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+      
+
+        private void PbForPlay_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timerForPlay_Tick(object sender, EventArgs e)
+        {
+            
+            if (Game.CounterTimerPlay == 30 )
+            {
+                if(Game.CounterOfWin + Game.CounterOfLose != Game.CounterRound)
+                {
+                    FillCounterWinnerAndLoser(false);
+                    FillColorToButtonNumbers();
+                    SetVisibleinPanelTries();
+
+                }
+                if (Game.CounterRound == Game.NumberOfRound)
+                {
+                    timerForPlay.Stop();
+                    btnNextRound.Visible = false;
+                    WhenYouArriveLastRound();
+                    return;
+                }
+
+          
+             btnNextRound.Visible = false;
+             Game.CounterTimerPlay = 0;
+             Game.CounterRound++;
+           //  ResetColorButton();
+             SetRoundGame(Game.CounterRound);
+             //N = Numbers & C = Color
+             FillAllButtonNAndC();
+             FillbuttonNumberQuestion();
+             EnableForThreeButtons(true);
+             FillCounterRepetNumberQuestion();
+             FillThreeChoices();
+                return;
+            }
+
+            timerForPlay.Enabled = true;
+            Game.CounterTimerPlay++;
+            PbForPlay.Value = Game.CounterTimerPlay;
+            lblTimer.Text = "(" + Game.CounterTimerPlay.ToString() + ") Second(s).";
+        }
+
+        private void btnNextRound_Click(object sender, EventArgs e)
+        {
+            picModeGame.Image = Image.FromFile(@"C:\Photos\BlackScreen.jpg");
+            Game.CounterTimerPlay = 30;
+
+            //picModeGame.Image = Image.FromFile(@"C:\Photos\BlackScreen.jpg");
+            //Game.CounterTimerPlay = 0;
+            //Game.CounterRound++;
+            //ResetColorButton();
+            //SetRoundGame(Game.CounterRound);
+            ////N = Numbers & C = Color
+            //FillAllButtonNAndC();
+            //FillbuttonNumberQuestion();
+            //EnableForThreeButtons(true);
+            //FillCounterRepetNumberQuestion();
+            //FillThreeChoices();
+        }
+
+       
+
+        private void btnYourChoice1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnTry1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTimer_Click(object sender, EventArgs e)
+        {
+
+        }
+        void WhenMouseLeaveButton(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.ForeColor = Color.Black;
+        }
+
+        void WhenMouseEnterButton(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.ForeColor = Color.Red;
+        }
+
+        private void btnPlay_MouseDown(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }
