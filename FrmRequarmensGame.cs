@@ -6,317 +6,312 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-namespace ColorMatching_Game
+using static FlipTheNumbers.FrmRequarmensGame;
+using MyFirstLibraryInForm;
+namespace FlipTheNumbers
 {
     public partial class FrmRequarmensGame : Form
     {
         public static FrmRequarmensGame Instance;
         public FrmRequarmensGame()
         {
-            Instance = this;
+            
             InitializeComponent();
+            Instance = this;
         }
-        public stReq Req;
-        public struct stReq
+        stCounter counter;
+        struct stCounter
         {
-            public byte Counter;
-            public Color Color;
-            public string Color1, Color2, Color3, Color4;
-            public string StringYourColors;
-            public byte Timer;
-            public string LevelGame;
+            public byte CounterTime;
         };
 
-       
-        void FillButtonColor(Button btn,  Color color)
+        public stInfoGame InfoGame;
+        public struct stInfoGame
         {
-            btn.Visible = true;
-            btn.BackColor = color;
-        }
-        void FillColorByCounter(byte Counter, Color color)
-        {
-            switch(Counter)
-            {
-              case 1:
-              {
-                  FillButtonColor(btnFirstColor, color);
-                  return;
-              }
-              case 2:
-              {
-                  FillButtonColor(btnSecondColor, color);
-                  return;
-              }
-              case 3:
-              {
-                  FillButtonColor(btnThirdColor, color);
-                  return;
-              }
-              case 4:
-              {
-                  FillButtonColor(btnForthColor, color);
-                  return;
-              }
-                  
-            }
-        }
-
-        void FillStructReq(byte Counter, Color color)
-        {
-            Req.Counter = Counter;
-            Req.Color = color;
-        }
-        
-        string GetStringColors(string Color1,string Color2, string Color3, string Color4)
-        {
-            if (Req.LevelGame == "Easy")
-                return Color1 + ", " + Color2;
-            else
-                return Color1 + ", " + Color2 + ", " + Color3 + ", " + Color4;
-        }
-
-        void WhenPressCheckBox(RadioButton rb)
-        {
-           
-            byte Tag = Convert.ToByte(rb.Tag);
-            switch (Tag)
-            {
-                case 1:
-                    {
-                        if(rbRed.Checked)
-                        {
-                           FillStructReq(Tag, Color.Red);
-                            Req.Color1 = "Red";
-                        }
-                        else
-                        {
-                            FillStructReq(Tag, Color.DarkRed);
-                            Req.Color1 = "Dark Red";
-                        }
-                        break;
-                    }
-                    case 2:
-                    {
-                        if (rbYellow.Checked)
-                        {
-                            FillStructReq(Tag, Color.Yellow);
-                            Req.Color2 = "Yellow";
-                        }
-                        else
-                        {
-                            FillStructReq(Tag, Color.LightYellow);
-                            Req.Color2 = "Light Yellow";
-                        }
-                        break;
-                    }
-                case 3:
-                    {
-                        if(rbGreen.Checked)
-                        {
-                            FillStructReq(Tag, Color.Green);
-                            Req.Color3 = "Green";
-                        }
-                        else
-                        {
-                            FillStructReq (Tag, Color.DarkGreen);
-                            Req.Color3 = "Dark Green";
-                        }
-                        break;
-                    }
-                case 4:
-                    {
-                        if(rbBlue.Checked)
-                        {
-                            FillStructReq(Tag, Color.Blue);
-                            Req.Color4 = "Blue";
-                        }
-                        else
-                        {
-                            FillStructReq(Tag, Color.LightBlue);
-                            Req.Color4 = "Light Blue";
-                        }
-                        break;
-                    }
-            }
-
-            Req.StringYourColors = GetStringColors(Req.Color1, Req.Color2, Req.Color3, Req.Color4);
-        }
-        bool VisableStartGame()
-        {
-            if(string.IsNullOrEmpty(Req.LevelGame))
-            {
-                return false;
-            }
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                    return (btnFirstColor.Visible == true && btnSecondColor.Visible == true) && numericTime.Value > 0;
-                default:
-
-                    return (btnFirstColor.Visible == true && btnSecondColor.Visible == true && btnThirdColor.Visible == true && btnForthColor.Visible == true) && numericTime.Value > 0;
-            }
-        }
-
-        private void RadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            WhenPressCheckBox((RadioButton)sender);
-            FillColorByCounter(Req.Counter, Req.Color);
-            if (VisableStartGame())
-            {
-                btnStartGame.Visible = true;
-            }
-        }
-
-       
-        public void ResetRequarmensGame()
-        {
-            rbBlue.Checked = false;
-            rbGreen.Checked = false;
-            rbYellow.Checked = false;
-            rbRed.Checked = false;
-            rbDarkGreen.Checked = false;
-            rbDarkRed.Checked = false;
-            rbLightBlue.Checked = false;
-            rbLightYellow.Checked = false;
-
-            btnStartGame.Visible = false;
-            gbColor.Visible = false;
-            numericTime.Value = 0;
-            numericTime.Visible = false;
-
-            btnFirstColor.Visible = false;
-            btnSecondColor.Visible = false;
-            btnThirdColor.Visible = false;
-            btnForthColor.Visible = false;
+            public Color Color;
+            public string ColorName;
+     
+            public byte  NumberOfRound;
         }
 
 
-
-        void ChangeSizegbColorByLevel()
+        bool IsTimeFinish()
         {
-            System.Drawing.Size size;
-            switch (Req.LevelGame)
-            {
-                case "Easy":
-                     size = new System.Drawing.Size(320, 113);
-                    btnThirdColor.Visible = false;
-                    btnForthColor.Visible = false;
-                    break;
+            return counter.CounterTime == 100;
+        }
 
-                default:
-                    size = new System.Drawing.Size(320, 201);
-                    if(rbGreen.Checked || rbDarkGreen.Checked)
-                    {
-                        btnThirdColor.Visible = true;
-                    }
-                    else
-                    {
-                        btnThirdColor.Visible = false;
-                    }
-                    if (rbBlue.Checked || rbLightBlue.Checked)
-                    {
-                        btnForthColor.Visible = true;
-                    }
-                    else
-                    {
-                        btnForthColor.Visible = false;
-                    }
-
-
-                    break;
-            }
-            gbColor.Size = size;
+        void WhenPressPlayGameButton()
+        {
             
+           if(IsTimeFinish())
+            {
+               if(MessageBox.Show("You can play right now","Wait",MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    return;
+                }
+                return;
+            }
+
+           if(!IsFullData())
+            {
+                if (MessageBox.Show("You must fill the Requarmes", "Stop", MessageBoxButtons.OKCancel,MessageBoxIcon.Stop) == DialogResult.OK)
+                {
+                    btnRequarmes.Focus();
+                    btnRequarmes.ForeColor = Color.White;
+                    return;
+                }
+                return;
+            }
+
+            lblTimer.Visible = true;
+            pbTimer.Visible = true;
+            timer1.Enabled = true;
+            lblWait.Visible = true;
+        }
+
+        public void PlayAgain(bool ShowForm)
+        {
+            if(ShowForm)
+                Application.OpenForms["FrmRequarmensGame"].Show();
+
+
+            counter.CounterTime = 0;
+            this.Size = GetSize(274, 484);
+            InfoGame.ColorName = null;
+            InfoGame.NumberOfRound = 0;
+            NUDRound.Value = 0; NUDRound.Visible = false;
+
+            lblTimer.Visible = false;
+            pbTimer.Visible = false;
+            timer1.Enabled = false;
+            lblWait.Visible = false;
+            lblFinishLoad.Visible = false;
+
+        }
+
+        void FillLabelWelcome()
+        {
+            string Welcome;
+            Welcome = "Welcome : " + FrmSignUp.instance.playerInfo.UserName;
+
+            lblWelcomePlayerName.Text = Welcome;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //ResetForm();
+            this.Size = new Size(321, 594);
+           // this.Size = GetSize(274, 484);
+            FillLabelWelcome();
+        }
+
+//
+        Form frmGame = new FrmGame();
+
+        void ShowFormGame()
+        {
+            if(frmGame.IsDisposed)
+            {
+                frmGame = new FrmGame();
+                frmGame.Show();
+                return;
+            }
+            frmGame.Show();
+        }
+
+      //  public Form Game { get { return frmGame;} }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
            
+            counter.CounterTime += 10;
+            pbTimer.Value = counter.CounterTime;
+            lblTimer.Text = counter.CounterTime.ToString() + "%";
+            if(counter.CounterTime == 100) 
+            {
+                timer1.Enabled=false;
+                lblWait.Visible=false;
+                lblFinishLoad.Visible=true;
+                if(MessageBox.Show("Now, You can play","Finish Time !",MessageBoxButtons.OK) == DialogResult.OK)
+                {
+                    this.Hide();
+
+                    ShowFormGame();
+
+                }
+
+            }
         }
 
-
-        private void FrmRequarmensGame_Load(object sender, EventArgs e)
+        void VisibleSaveData()
         {
+            if (IsFullData())
+            {
+                btnSave.Enabled = true;
+            }
+            else
+            {
+                btnSave.Enabled = false;
+            }
         }
 
-        private void button1_MouseEnter(object sender, EventArgs e)
+        void VisibleNumericUpDown(NumericUpDown NUD)
         {
-            gbColor.Visible = true;
+            NUD.Visible = true;
+        }
+
+        byte ValueNUD(NumericUpDown NUD)
+        {
+            return Convert.ToByte(NUD.Value);
+        }
+  
+        bool IsFullData()
+        {
+            return  InfoGame.NumberOfRound > 0 && !string.IsNullOrEmpty(InfoGame.ColorName);
+        }
+
+       
+      
+        
+        private void btnPlayGame_Click(object sender, EventArgs e)
+        {
+            WhenPressPlayGameButton();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Now,You can play Enjoy!", "Save");
+          
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            
+        }
+
+      
+
+        private void btnSetColor_MouseEnter(object sender, EventArgs e)
+        {
+          
         }
 
         private void btnSetColor_Click(object sender, EventArgs e)
         {
             
-        }
-
-        private void button1_MouseEnter_1(object sender, EventArgs e)
-        {
-            numericTime.Visible = true;
-        }
-
-        private void btnSetTimer_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cbRed_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void numericTime_ValueChanged(object sender, EventArgs e)
-        {
-            Req.Timer = Convert.ToByte(numericTime.Value);
-            if (VisableStartGame())
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                btnStartGame.Visible = true;
+                if (colorDialog1.Color == Color.White)
+                {
+                   
+                    if (MessageBox.Show("You can`t choice white color, Choice another color", "Another Color", MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
+                    {
+
+                        InfoGame.ColorName = null;
+                        VisibleSaveData();
+                        return;
+                    }
+                }
+
+
+                InfoGame.Color = colorDialog1.Color;
+                InfoGame.ColorName = InfoGame.Color.Name;
+                VisibleSaveData();
             }
-            else
-            {
-                btnStartGame.Visible = false;
-            }
+
+        }
+
+       
+
+      
+                                            //353 - 557 Without Settings
+       public Size GetSize(int Width, int Height) //845 - 557 With Settings
+        {
+            Size size = new Size(Width, Height);
+            return size;
         }
 
       
-        
-        private void btnStartGame_Click(object sender, EventArgs e)
-        {
-            Form FormGame = new FrmGame();
-            FormGame.Show();
-            this.Hide();
-        }
 
-        private void gbColor_Enter(object sender, EventArgs e)
+        private void gbYourOrder_Enter(object sender, EventArgs e)
         {
 
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void btn3C_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void btnSetLevel_MouseEnter(object sender, EventArgs e)
+        private void btnSettings_Click(object sender, EventArgs e)
         {
-            cbLevel.Visible = true;
+            pSettings.Visible = true;
+            this.Size = GetSize(837, 594);
         }
 
-        private void cbLevel_SelectedIndexChanged(object sender, EventArgs e)
+       
+        private void btnExit_Click(object sender, EventArgs e)
         {
-            Req.LevelGame = cbLevel.Text;
-            ChangeSizegbColorByLevel();
-            if (VisableStartGame())
+            if(MessageBox.Show("Are you sure, Do you want Exit The Game?","Exit",MessageBoxButtons.YesNo,MessageBoxIcon.Question,MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
-                btnStartGame.Visible = true;
+                
+              FrmSignUp.instance.Close();
+  
+                this.Close();
             }
-            else
-            {
-                btnStartGame.Visible = false;
-            }
+           
         }
 
-        private void gbColor_Enter_1(object sender, EventArgs e)
+        private void btnCloseSettings_Click(object sender, EventArgs e)
+        {
+            pSettings.Visible = false;
+            //this.Size = GetSize(274, 484);
+            this.Size = new Size(321, 594);
+        }
+
+        private void pbTimer_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            VisibleNumericUpDown(NUDRound);
+        }
+
+        private void NUDRound_ValueChanged(object sender, EventArgs e)
+        {
+            InfoGame.NumberOfRound = ValueNUD(NUDRound);
+            VisibleSaveData();
+        }
+
+        private void btnYourOrder_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSetCoulmns_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void NUDCoulmns_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        void WhenMouseLeaveButton(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.ForeColor = Color.Black;
+        }
+
+        void WhenMouseEnterButton(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.ForeColor = Color.White;
         }
     }
 }
